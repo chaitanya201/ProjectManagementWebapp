@@ -29,41 +29,36 @@ const upload = multer({ storage: storage });
 // registration with async await
 const register = async (req, res) => {
   console.log("checking user credentials for registration");
-  const userEmail = await userModel.findOne({"email": req.body.email})
-  if(!userEmail) {
-    const userMobile = await userModel.findOne({"mobile": req.body.mobile})
-    if(!userMobile) {
-      const salt = await bcrypt.genSalt(18)
-      const hashPassword = await bcrypt.hash(req.body.password, salt)
+  const userEmail = await userModel.findOne({ email: req.body.email });
+  if (!userEmail) {
+    const userMobile = await userModel.findOne({ mobile: req.body.mobile });
+    if (!userMobile) {
+      const salt = await bcrypt.genSalt(18);
+      const hashPassword = await bcrypt.hash(req.body.password, salt);
       const newUser = new userModel({
         name: req.body.name,
         email: req.body.email,
         mobile: req.body.mobile,
         password: hashPassword,
-      })
+      });
 
       newUser.save((err) => {
         if (err) {
-          console.log(
-            "error*********during saving****************",
-            err
-          );
-          return res.send({ msg: "error", user: null, status:"failed" });
+          console.log("error*********during saving****************", err);
+          return res.send({ msg: "error", user: null, status: "failed" });
         } else {
           console.log("success!!!!!!!!!!!!!!!!!!!!");
           console.log("new email", newUser.email);
-          return res.send({ msg: "success", user: newUser, status:"success" });
+          return res.send({ msg: "success", user: newUser, status: "success" });
         }
-      })
-
+      });
     } else {
-      res.send({"status": "failed", "msg":"mobile already exists", user:null})
-    } 
+      res.send({ status: "failed", msg: "mobile already exists", user: null });
+    }
   } else {
-    res.send({"status": "failed", "msg":"Email already exists", user:null})
+    res.send({ status: "failed", msg: "Email already exists", user: null });
   }
-}
-
+};
 
 // registration part without async await
 // router.post("/register", (req, res) => {
@@ -218,20 +213,43 @@ const getUsers = async (req, res) => {
 const getProject = async (req, res) => {
   console.log("id of user is ", req.query._id);
   console.log("email of user is ", req.body);
-  const allProjects = await projectModel.find({ members: req.query._id });
-  console.log("all projects", allProjects);
-  if (allProjects.length >= 1) {
-    res.send({
-      status: "success",
-      msg: "all projects are found successfully",
-      allProjects: allProjects,
-    });
+  if (!req.query.stage && req.query._id) {
+    const allProjects = await projectModel.find({ members: req.query._id });
+    console.log("all projects", allProjects);
+    if (allProjects.length >= 1) {
+      res.send({
+        status: "success",
+        msg: "all projects are found successfully",
+        allProjects: allProjects,
+      });
+    } else {
+      res.send({
+        msg: "could not get projects",
+        status: "failed",
+        allProjects: null,
+      });
+    }
+  } else if (req.query.stage && req.query._id) {
+    console.log("in req.query.stage");
+    console.log("stage is ", req.query.stage);
+    console.log("id is ", req.query._id);
+    const allProjects = await projectModel.find({ members: req.query._id, status:req.query.stage });
+    console.log("all projects", allProjects);
+    if (allProjects.length >= 1) {
+      res.send({
+        status: "success",
+        msg: "all projects are found successfully",
+        allProjects: allProjects,
+      });
+    } else {
+      res.send({
+        msg: "could not get projects",
+        status: "failed",
+        allProjects: null,
+      });
+    }
   } else {
-    res.send({
-      msg: "could not get projects",
-      status: "failed",
-      allProjects: null,
-    });
+    res.send({"status":"failed","msg":"invalid query", allProjects:null})
   }
 };
 
@@ -247,31 +265,42 @@ const getProject = async (req, res) => {
 
 const getProjectToUpdate = async (req, res) => {
   console.log("query is ", req.query.status);
-  if(req.query.status) {
+  if (req.query.status) {
     console.log("in query");
-    const allProjects = await projectModel.find({status: req.query.status}).populate("members");
+    const allProjects = await projectModel
+      .find({ status: req.query.status })
+      .populate("members");
     console.log("all projects are ", allProjects);
     if (allProjects) {
       return res.send({
         allProjects,
         status: "success",
-        msg: "all projects are collected successfully", "query":"query"
+        msg: "all projects are collected successfully",
+        query: "query",
       });
     } else {
-      return res.send({ status: "failed", msg: "failed to get projects", allProjects });
+      return res.send({
+        status: "failed",
+        msg: "failed to get projects",
+        allProjects,
+      });
     }
   } else {
-    const projects = await projectModel.find().populate("members")
+    const projects = await projectModel.find().populate("members");
     console.log("projects are ", projects);
     if (projects) {
       console.log("true");
       return res.send({
-        allProjects:projects,
+        allProjects: projects,
         status: "success",
         msg: "all projects are collected successfully",
       });
     } else {
-      res.send({ status: "failed", msg: "failed to get projects", allProjects:projects });
+      res.send({
+        status: "failed",
+        msg: "failed to get projects",
+        allProjects: projects,
+      });
     }
   }
 };
@@ -289,7 +318,7 @@ const updateProjectData = async (req, res) => {
         members: req.body.members,
       },
     },
-    {new : true}
+    { new: true }
   );
   console.log("project data is ", project);
   if (project) {
@@ -378,5 +407,5 @@ router.get("/get-projects-for-updation", getProjectToUpdate);
 router.post("/update-project", updateProjectData);
 
 // 8. register
-router.post("/register", register)
+router.post("/register", register);
 module.exports = router;

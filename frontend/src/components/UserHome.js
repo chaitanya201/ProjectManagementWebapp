@@ -94,12 +94,34 @@ export default function UserHome() {
       ) : (
         <div></div>
       )}
+      {
+        user.position === "employee" ? 
+        <div className="flex px-2 space-x-3 bg-cyan-400 rounded-lg text-white items-end">
+          <div>
+            <Link state={{status:"Stage1", userID:user._id}} to="/show-user-project-status" >Stage 1</Link>
+          </div>
+          <div>
+            <Link state={{status:"Stage2", userID:user._id}} to="/show-user-project-status" >Stage 2</Link>
+          </div>
+          <div>
+            <Link state={{status:"Stage3", userID:user._id}} to="/show-user-project-status" >Stage 3</Link>
+          </div>
+          <div>
+            <Link state={{status:"complete", userID:user._id}} to="/show-user-project-status" >Completed</Link>
+          </div>
+        </div> : <div></div>
+      }
       <h3 className=" flex justify-center text-2xl">All Projects</h3>
       {loading ? (
         <div>Loading.....</div>
       ) : allProjects ? (
         allProjects.map((value) => {
-          return <ShowAllProjectsOfUser project={value} key={value._id} />;
+          return (
+            <div key={value._id}>
+              <ShowAllProjectsOfUser project={value}  />
+              <br />
+            </div>
+          )
         })
       ) : (
         <div>No project is assigned yet</div>

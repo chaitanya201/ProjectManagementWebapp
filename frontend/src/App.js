@@ -10,6 +10,7 @@ import UpdateProjectStatus from "./components/UpdateProjectStatus";
 import ShowSingleProject from "./components/ShowSingleProject";
 import Navbar from "./components/Navbar";
 import ShowProjectStatus from "./components/ShowProjectStatus";
+import UserProjectStatus from "./components/UserProjectStatus";
 
 function App() {
   const loginStatus = useSelector((state) => state.userLoginInfo.isLoggedIn)
@@ -50,6 +51,10 @@ function App() {
         }
         { loginStatus ?
           <Route path="/show-project-status" element={<ShowProjectStatus />} ></Route> :
+          <Route path="/login" element={<Login />} ></Route>
+        }
+        { loginStatus ?
+          <Route path="/show-user-project-status" element={<UserProjectStatus />} ></Route> :
           <Route path="/login" element={<Login />} ></Route>
         }
         <Route path="*" element={<PageNotFound />}></Route>

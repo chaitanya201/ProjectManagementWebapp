@@ -11,6 +11,7 @@ import ShowSingleProject from "./components/ShowSingleProject";
 import Navbar from "./components/Navbar";
 import ShowProjectStatus from "./components/ShowProjectStatus";
 import UserProjectStatus from "./components/UserProjectStatus";
+import ViewProject from "./components/ViewProject";
 
 function App() {
   const loginStatus = useSelector((state) => state.userLoginInfo.isLoggedIn)
@@ -24,7 +25,9 @@ function App() {
       <div></div> :
       <Navbar />
     } */}
-    <Navbar />
+      {
+        loginStatus ? <Navbar /> : <div></div>
+      }
       <Routes>
         <Route path="/register" element={<Register />} > </Route>
         <Route path="login" element={<Login />} ></Route>
@@ -55,6 +58,10 @@ function App() {
         }
         { loginStatus ?
           <Route path="/show-user-project-status" element={<UserProjectStatus />} ></Route> :
+          <Route path="/login" element={<Login />} ></Route>
+        }
+        { loginStatus ?
+          <Route path="/show-tasks" element={<ViewProject />} ></Route> :
           <Route path="/login" element={<Login />} ></Route>
         }
         <Route path="*" element={<PageNotFound />}></Route>

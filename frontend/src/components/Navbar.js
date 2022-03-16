@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { changeLoginState } from "../store/userLoginSlice";
 import { updateUser } from "../store/userObjSlice";
+import { updateTasks } from "../store/taskSlice";
 
 export default function Navbar({ fixed }) {
   const user = useSelector((state) => state.userObj.userObj);
@@ -11,6 +12,7 @@ export default function Navbar({ fixed }) {
   const logOut = () => {
     dispatch(changeLoginState(false));
     dispatch(updateUser({}));
+    dispatch(updateTasks([]))
     navigate("/login");
   };
 
@@ -20,11 +22,8 @@ export default function Navbar({ fixed }) {
       <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 bg-teal-500 mb-3">
         <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
           <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
-            <div
-              className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white"
-              
-            >
-            {user.name}
+            <div className="text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white">
+              {user.name}
             </div>
             <button
               className="text-white cursor-pointer text-xl leading-none px-3 py-1 border border-solid  rounded bg-transparent block lg:hidden outline-none focus:outline-none"
@@ -80,8 +79,102 @@ export default function Navbar({ fixed }) {
                       <span className="ml-2">Update Project</span>
                     </Link>
                   </li>
-                  
                 </div>
+              ) : (
+                <div></div>
+              )}
+              {user.position === "admin" ? (
+                <div className="flex">
+                  <div className="nav-item">
+                    <Link
+                      state={{ status: "Stage1" }}
+                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-black hover:opacity-75"
+                      to="/show-project-status"
+                    >
+                      <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
+                      <span className="ml-2">Stage 1</span>
+                    </Link>
+                  </div>
+                  <div className="nav-item">
+                    <Link
+                      state={{ status: "Stage2" }}
+                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-black hover:opacity-75"
+                      to="/show-project-status"
+                    >
+                      <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
+                      <span className="ml-2">Stage 2</span>
+                    </Link>
+                  </div>
+                  <div className="nav-item">
+                    <Link
+                      state={{ status: "Stage3" }}
+                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-black hover:opacity-75"
+                      to="/show-project-status"
+                    >
+                      <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
+                      <span className="ml-2">Stage 3</span>
+                    </Link>
+                  </div>
+                  <div className="nav-item">
+                    <Link
+                      state={{ status: "completed" }}
+                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-black hover:opacity-75"
+                      to="/show-project-status"
+                    >
+                      <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
+                      <span className="ml-2">Completed</span>
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <div></div>
+              )}
+              {user.position === "employee" ? (
+                < >
+                  <li>
+                    <Link
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                      state={{ status: "Stage1", userID: user._id }}
+                      to="/show-user-project-status"
+                    >
+                      <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
+                  <span className="ml-2">Stage 1</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+
+                      state={{ status: "Stage2", userID: user._id }}
+                      to="/show-user-project-status"
+                    >
+                      <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
+                  <span className="ml-2">Stage 2</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+
+                      state={{ status: "Stage3", userID: user._id }}
+                      to="/show-user-project-status"
+                    >
+                      <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
+                  <span className="ml-2">Stage 3</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                  className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+
+                      state={{ status: "Complete", userID: user._id }}
+                      to="/show-user-project-status"
+                    >
+                      <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
+                      <span className="ml-2">Completed</span>
+                    </Link>
+                  </li>
+                </>
               ) : (
                 <div></div>
               )}

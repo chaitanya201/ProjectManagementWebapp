@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ShowAllProjectsOfUser from "./ShowAllProjectsOfUser";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
-import { changeLoginState } from "../store/userLoginSlice";
-import { updateUser } from "../store/userObjSlice";
-import Navbar from "./Navbar";
+import { useSelector } from "react-redux";
 
 export default function UserHome() {
   const [allProjects, setAllProjects] = useState(null);
   const [loading, setLoading] = useState(true);
   const user = useSelector((state) => state.userObj.userObj);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [taskAdded, setTaskAdded] = useState(true);
   //   // logout function
   //   const logOut = () => {
   //     dispatch(changeLoginState(false))
@@ -23,18 +18,21 @@ export default function UserHome() {
   // using useEffect
 
   useEffect(() => {
+    console.log("this is user home");
     const getData = async () => {
       console.log("user is user", user);
       // const data = new FormData();
       // data.append("_id", user._id);
       const result = await axios.get(
-        "http://localhost:5000/user/get-all-projects/?_id=" + user._id
+        "http://localhost:5000/user/get-all-projects/?_id=" + user._id + "&permission="+ user.position
       );
       console.log(result.data.msg);
+      console.log("this is user home");
       console.log("loading setting ", loading);
       setLoading(false);
       if (result.data.status === "success") {
         setAllProjects(result.data.allProjects);
+        setTaskAdded(false)
         console.log("data of projects fetched successfully");
         console.log(result.data);
       } else {
@@ -48,69 +46,7 @@ export default function UserHome() {
   console.log("all projects", allProjects);
   return (
     <div>
-      {user.position === "admin" ? (
-        <div className="flex" >
-          <div className="nav-item">
-            <Link
-              state={{ status: "Stage1" }}
-              className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-black hover:opacity-75"
-              to="/show-project-status"
-            >
-              <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
-              <span className="ml-2">Stage 1</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link
-              state={{ status: "Stage2" }}
-              className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-black hover:opacity-75"
-              to="/show-project-status"
-            >
-              <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
-              <span className="ml-2">Stage 2</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link
-              state={{ status: "Stage3" }}
-              className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-black hover:opacity-75"
-              to="/show-project-status"
-            >
-              <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
-              <span className="ml-2">Stage 3</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link
-              state={{ status: "completed" }}
-              className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-black hover:opacity-75"
-              to="/show-project-status"
-            >
-              <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
-              <span className="ml-2">Completed</span>
-            </Link>
-          </div>
-        </div>
-      ) : (
-        <div></div>
-      )}
-      {
-        user.position === "employee" ? 
-        <div className="flex px-2 space-x-3 bg-cyan-400 rounded-lg text-white items-end">
-          <div>
-            <Link state={{status:"Stage1", userID:user._id}} to="/show-user-project-status" >Stage 1</Link>
-          </div>
-          <div>
-            <Link state={{status:"Stage2", userID:user._id}} to="/show-user-project-status" >Stage 2</Link>
-          </div>
-          <div>
-            <Link state={{status:"Stage3", userID:user._id}} to="/show-user-project-status" >Stage 3</Link>
-          </div>
-          <div>
-            <Link state={{status:"complete", userID:user._id}} to="/show-user-project-status" >Completed</Link>
-          </div>
-        </div> : <div></div>
-      }
+      
       <h3 className=" flex justify-center text-2xl">All Projects</h3>
       {loading ? (
         <div>Loading.....</div>
@@ -118,8 +54,9 @@ export default function UserHome() {
         allProjects.map((value) => {
           return (
             <div key={value._id}>
-              <ShowAllProjectsOfUser project={value}  />
+              <ShowAllProjectsOfUser project={value} setTaskAdded={setTaskAdded} />
               <br />
+              
             </div>
           )
         })

@@ -12,7 +12,7 @@ export default function UserProjectStatus() {
         const getAllProjects = async () => {
             const {status, userID} = location.state
             console.log("status is ", status);
-            const url = "http://localhost:5000/user/get-projects-for-updation/?status=" + status + "&_id=" + userID
+            const url = "http://localhost:5000/user/get-all-projects/?status=" + status + "&_id=" + userID
             console.log("url is ", url);
             const response = await axios.get(url)
             if((await response).data.status === "success") {

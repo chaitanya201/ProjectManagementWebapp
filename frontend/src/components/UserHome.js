@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ShowAllProjectsOfUser from "./ShowAllProjectsOfUser";
 import { useSelector } from "react-redux";
-
+import { useLocation } from 'react-router-dom'
 export default function UserHome() {
   const [allProjects, setAllProjects] = useState(null);
   const [loading, setLoading] = useState(true);
   const user = useSelector((state) => state.userObj.userObj);
   const [taskAdded, setTaskAdded] = useState(true);
+  const location = useLocation()
   //   // logout function
   //   const logOut = () => {
   //     dispatch(changeLoginState(false))
@@ -16,6 +17,10 @@ export default function UserHome() {
   // }
 
   // using useEffect
+
+  console.log("******************************");
+  console.log("current path is ", location.pathname);
+  console.log("******************************");
 
   useEffect(() => {
     console.log("this is user home");

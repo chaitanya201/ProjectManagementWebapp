@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { changeLoginState } from "../store/userLoginSlice";
 import { updateUser } from "../store/userObjSlice";
 import Alert from "./Alert";
@@ -21,12 +21,16 @@ export default function UserProfile() {
   };
   // creating variables to store the personal info of users
   let msg = null;
+  const location = useLocation()
   let [name, setName] = useState(user.name);
   let [email, setEmail] = useState(user.email);
   let [mobile, setMobile] = useState(user.mobile);
   const [image, setImage] = useState(user.pic);
   console.log("name is ", name);
   console.log("image is ", image);
+  console.log("*****************************");
+  console.log("current path is ", location.pathname);
+  console.log("-----------------------------+++++++");
 
   const [alertMsg, setAlertMsg] = useState(null);
   const [alterMsgColor, setAlterMsgColor] = useState("emerald");

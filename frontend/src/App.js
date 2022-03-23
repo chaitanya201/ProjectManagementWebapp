@@ -17,7 +17,7 @@ function App() {
   const loginStatus = useSelector((state) => state.userLoginInfo.isLoggedIn)
   // getting current path in the url 
   // to check whether path is login or register
-  const currentPathName = window.location.href;
+  // const currentPathName = window.location.href;
   return (
     <BrowserRouter>
     {/* {
